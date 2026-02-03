@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "Hospital API - Viewer Tests",
+    "description": "Test Viewer User (Read-Only) - Chỉ được đọc, không được sửa/xóa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "viewerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login Viewer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto save viewer token",
+                  "if (pm.response.json().success && pm.response.json().role === 'viewer') {",
+                  "    pm.environment.set('viewerToken', pm.response.json().token);",
+                  "    pm.collectionVariables.set('viewerToken', pm.response.json().token);",
+                  "    console.log('✅ Viewer token saved!');",
+                  "    ",
+                  "    pm.test('Login successful', function() {",
+                  "        pm.response.to.have.status(200);",
+                  "        pm.expect(pm.response.json().role).to.eql('viewer');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testviewer123@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin (for comparison)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.json().success && pm.response.json().role === 'admin') {",
+                  "    pm.environment.set('adminToken', pm.response.json().token);",
+                  "    pm.collectionVariables.set('adminToken', pm.response.json().token);",
+                  "    console.log('✅ Admin token saved!');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Viewer Tests - READ (✅ Should Work)",
+      "item": [
+        {
+          "name": "✅ Get All Doctors (Viewer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns doctor data', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data).to.be.an('array');",
+                  "    pm.expect(response.count).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{viewerToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Get Doctors by Department (Viewer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns data', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('data');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-department?token={{viewerToken}}&department=General",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-department"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                },
+                {
+                  "key": "department",
+                  "value": "General"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Get Doctors by Specialization (Viewer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns data', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('data');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-specialization?token={{viewerToken}}&specialization=Cardiologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-specialization"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Cardiologist"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Export Doctors JSON (Public - No token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array of doctors', () => {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "export"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Viewer Tests - MODIFY (❌ Should Fail)",
+      "item": [
+        {
+          "name": "❌ Create Doctor (Viewer - Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Should be rejected', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.success).to.eql(false);",
+                  "    pm.expect(response.message).to.include('Viewer can only read');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Test Doctor\",\n  \"specialization\": \"Neurologist\",\n  \"department\": \"Neurology\",\n  \"Experience\": \"5 years\",\n  \"availability\": \"Mon-Fri\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{viewerToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Update Doctor (Viewer - Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Should be rejected', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.success).to.eql(false);",
+                  "    pm.expect(response.message).to.include('Viewer can only read');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/1?token={{viewerToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "1"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Delete Doctor (Viewer - Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Should be rejected', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.success).to.eql(false);",
+                  "    pm.expect(response.message).to.include('Viewer can only read');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/1?token={{viewerToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "1"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{viewerToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Admin Tests - For Comparison (✅ Should Work)",
+      "item": [
+        {
+          "name": "✅ Get All Doctors (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{adminToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

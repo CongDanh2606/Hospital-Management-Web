@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Database Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Multi-Database Viewer</h1>
+            <p>Viewing data from Hospital & Ecommerce databases</p>
+            <div class="connection-status">
+                <span id="hospital-status" class="status">Hospital: <span class="loading">...</span></span>
+                <span id="ecommerce-status" class="status">Ecommerce: <span class="loading">...</span></span>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('doctors')">
+                🏥 Doctors (Hospital DB)
+            </button>
+            <button class="tab-btn" onclick="showTab('products')">
+                🛒 Products (Ecommerce DB)
+            </button>
+        </div>
+
+        <!-- Doctors Tab -->
+        <div id="doctors-tab" class="tab-content active">
+            <div class="section-header">
+                <h2>👨‍⚕️ Doctors List</h2>
+                <button onclick="loadDoctors()" class="refresh-btn">🔄 Refresh</button>
+            </div>
+            <div id="doctors-count" class="count-badge"></div>
+            <div id="doctors-loading" class="loading-spinner">Loading doctors...</div>
+            <div id="doctors-error" class="error-message"></div>
+            <div id="doctors-list" class="data-grid"></div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content">
+            <div class="section-header">
+                <h2>📦 Products List</h2>
+                <button onclick="loadProducts()" class="refresh-btn">🔄 Refresh</button>
+            </div>
+            <div id="products-count" class="count-badge"></div>
+            <div id="products-loading" class="loading-spinner">Loading products...</div>
+            <div id="products-error" class="error-message"></div>
+            <div id="products-list" class="data-grid"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+.doctorsSection {
+  text-align: center;
+  padding: 50px 0;
+  background-color: #fff;
+  
+}
+
+.doctorsSection h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  border: 2px solid #e6f3e6;
+  color: #e6f3e6; 
+  background-color: #203394; 
+  border-radius: 10px;
+  height: 100px;
+  padding-top: 30px;
+  width: 80%;
+  margin: 5px auto;
+  text-align: center;
+}
+
+.doctorsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  
+}
+
+.doctorCard {
+  width: 250px;
+  height: 380px;
+  perspective: 1000px;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.frontInfo {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.specialty {
+  background-color: #e6f3e6;
+  color: #13b33b;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.experience {
+  background-color: #e6f0ff;
+  color: #203394;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.doctorName {
+  font-size: 1.2rem !important;
+  font-weight: 500;
+  color: #203394;
+  margin: 8px 0 4px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+
+.doctorCard:hover .cardInner {
+  transform: rotateY(180deg);
+}
+
+.cardFront,
+.cardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+
+.cardFront {
+  z-index: 2;
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  color: #333;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  overflow-y: auto;
+  cursor: pointer;
+}
+
+
+
+.cardFront img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+
+.cardFront h2 {
+  font-size: 1.5em;
+  margin: 10px 0 5px;
+}
+
+.cardFront p {
+  font-size: 1em;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.cardBack h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0077b5;
+  margin-bottom: 4px;
+}
+.cardBack hr {
+  border: none;
+  height: 1px;
+  background-color: #eaeaea;
+  margin: 8px 0;
+}
+
+
+.cardBack .bio {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.cardBack .details {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.cardBack .timing {
+  font-weight: 600;
+  font-size: 13px;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  background: #e6f7ff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+
+}
+
+.cardBack .socialIcons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 28px;
+  margin-top: auto;
+}
+
+.cardBack .socialIcons a {
+  color: #555;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.socialIcons a {
+  background: #f2f2f2;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+
+.cardBack .socialIcons a:hover {
+  color: #0077b5;
+  transform: scale(1.2);
+}
+
+/* Book Now Button */
+.bookNowBtn {
+  margin-top: 12px;
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(79, 172, 254, 0.6); /* initial glow */
+}
+
+/* Light mode */
+.bookNowBtn {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: #fff;
+}
+
+.bookNowBtn:hover {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 25px rgba(79, 172, 254, 0.9), 
+              0 0 40px rgba(0, 242, 254, 0.7); /* stronger glow */
+}
+
+
+  /* --- DARK MODE --- */
+:global(body.dark-mode) .doctorsSection {
+  background-color: #121212;
+  color: #fff;
+}
+
+:global(body.dark-mode) .doctorsSection h1{color: #e6f3e6; 
+  color: #eef6f9;
+  background-color: #1e1e2f;
+  border: 1px solid #e2e8f0;
+  
+}
+
+:global(body.dark-mode) .cardFront {
+  background-color: #1e1e2f;
+  color: #eee;
+}
+:global(body.dark-mode) .cardBack {
+  background: linear-gradient(180deg, #1e1e2f, #2a2d4a);
+  color: #e6f3e6;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+:global(body.dark-mode) .cardFront p {
+  color: #bbb;
+}
+
+
+:global(body.dark-mode) .cardBack h4 {
+  color: #57d596;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:global(body.dark-mode) .bio,
+:global(body.dark-mode) .details,
+:global(body.dark-mode) .timing {
+  color: #d0d6e0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+:global(body.dark-mode) .timing {
+  background: rgba(87, 213, 150, 0.15);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+:global(body.dark-mode) .socialIcons a {
+  color: #d0d6e0;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:global(body.dark-mode) .socialIcons a:hover {
+  color: #57d596;
+  background: rgba(87, 213, 150, 0.15);
+}
+
+
+:global(body.dark-mode) .cardBack hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 8px 0;
+}
+
+:global(body.dark-mode) .cardBack {
+  background-color: #262a52;
+}
+
+:global(body.dark-mode) .doctorName {
+  color: #e6f3e6;
+}
+
+
+:global(body.dark-mode) .specialty {
+  background-color: rgba(87, 213, 150, 0.15);
+  color: #57d596;
+}
+
+:global(body.dark-mode) .experience {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #a4b4ff;
+}

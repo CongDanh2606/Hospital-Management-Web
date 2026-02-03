@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital API Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 { margin-bottom: 10px; }
+    .content { padding: 30px; }
+    .section {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+    }
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    button:active { transform: translateY(0); }
+    button.secondary {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .success {
+      background: #d4edda;
+      border: 2px solid #c3e6cb;
+      color: #155724;
+    }
+    .error {
+      background: #f8d7da;
+      border: 2px solid #f5c6cb;
+      color: #721c24;
+    }
+    .info {
+      background: #d1ecf1;
+      border: 2px solid #bee5eb;
+      color: #0c5460;
+    }
+    .token-display {
+      background: #fff3cd;
+      border: 2px solid #ffeaa7;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      word-break: break-all;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+    }
+    .badge-success { background: #28a745; color: white; }
+    .badge-danger { background: #dc3545; color: white; }
+    .badge-info { background: #17a2b8; color: white; }
+    .loading {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏥 Hospital Management API Test</h1>
+      <p>Test Create Doctor API - No Postman Needed!</p>
+    </div>
+
+    <div class="content">
+      <!-- STEP 1: LOGIN -->
+      <div class="section">
+        <h2>📝 Step 1: Login Admin</h2>
+        <p>Click button bên dưới để login và lấy token</p>
+        <button onclick="loginAdmin()">
+          <span id="login-btn-text">🔑 Login Admin</span>
+        </button>
+        <div id="token-result"></div>
+      </div>
+
+      <!-- STEP 2: CREATE DOCTOR -->
+      <div class="section">
+        <h2>➕ Step 2: Create New Doctor</h2>
+        <p>Nhập thông tin bác sĩ mới:</p>
+        
+        <input type="text" id="name" placeholder="Tên bác sĩ (VD: Dr. Nguyen Van A)" value="Dr. Test Web">
+        <input type="text" id="specialization" placeholder="Chuyên khoa (VD: Cardiologist)" value="Cardiologist">
+        <input type="text" id="department" placeholder="Khoa (VD: Cardiology)" value="Cardiology">
+        <input type="text" id="experience" placeholder="Kinh nghiệm (VD: 10 years)" value="10 years">
+        <input type="text" id="availability" placeholder="Lịch làm việc (VD: Mon-Fri)" value="Mon-Fri">
+        
+        <button onclick="createDoctor()">
+          <span id="create-btn-text">✅ Create Doctor</span>
+        </button>
+        
+        <div id="create-result"></div>
+      </div>
+
+      <!-- STEP 3: GET ALL DOCTORS -->
+      <div class="section">
+        <h2>📋 Step 3: Get All Doctors</h2>
+        <p>Xem danh sách tất cả bác sĩ:</p>
+        
+        <button class="secondary" onclick="getAllDoctors()">
+          <span id="get-btn-text">📄 Get All Doctors</span>
+        </button>
+        
+        <div id="get-result"></div>
+      </div>
+
+      <!-- ERROR CODES REFERENCE -->
+      <div class="section">
+        <h2>📊 Error Codes Reference</h2>
+        <div>
+          <span class="badge badge-success">Code 0 - Success</span>
+          <span class="badge badge-danger">Code 1 - Missing Data</span>
+          <span class="badge badge-danger">Code 2 - Duplicate</span>
+          <span class="badge badge-danger">Code 3 - Invalid Token</span>
+          <span class="badge badge-danger">Code 4 - No Permission</span>
+          <span class="badge badge-danger">Code 5 - Database Error</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:5000';
+    let authToken = '';
+
+    // Utility: Show loading
+    function showLoading(btnId) {
+      const btn = document.getElementById(btnId);
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span class="loading"></span> Loading...';
+      btn.disabled = true;
+      return () => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      };
+    }
+
+    // STEP 1: Login Admin
+    async function loginAdmin() {
+      const stopLoading = showLoading('login-btn-text');
+      
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: 'admin@example.com',
+            password: 'password123'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          authToken = data.token;
+          
+          document.getElementById('token-result').innerHTML = `
+            <div class="result success">
+              <h3>✅ Login Successful!</h3>
+              <p><strong>Email:</strong> admin@example.com</p>
+              <p><strong>Role:</strong> <span class="badge badge-success">${data.role}</span></p>
+              <div class="token-display">
+                <strong>Token:</strong><br>${authToken}
+              </div>
+              <p style="margin-top: 10px; font-size: 12px;">
+                ✓ Token đã được lưu tự động!<br>
+                ✓ Bây giờ bạn có thể tạo doctor mới!
+              </p>
+            </div>
+          `;
+        } else {
+          document.getElementById('token-result').innerHTML = `
+            <div class="result error">
+              <h3>❌ Login Failed</h3>
+              <p>${data.message}</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        document.getElementById('token-result').innerHTML = `
+          <div class="result error">
+            <h3>❌ Error</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+              💡 Tip: Đảm bảo server đang chạy trên port 5000:<br>
+              <code>cd server && node index.js</code>
+            </p>
+          </div>
+        `;
+      } finally {
+        stopLoading();
+      }
+    }
+
+    // STEP 2: Create Doctor
+    async function createDoctor() {
+      if (!authToken) {
+        alert('⚠️ Vui lòng login trước! Click button "Login Admin" ở trên.');
+        return;
+      }
+
+      const stopLoading = showLoading('create-btn-text');
+
+      const doctorData = {
+        name: document.getElementById('name').value,
+        specialization: document.getElementById('specialization').value,
+        department: document.getElementById('department').value,
+        Experience: document.getElementById('experience').value,
+        availability: document.getElementById('availability').value
+      };
+
+      // Validation
+      if (!doctorData.name || !doctorData.specialization || !doctorData.department) {
+        document.getElementById('create-result').innerHTML = `
+          <div class="result error">
+            <h3>❌ Missing Required Fields</h3>
+            <p>Vui lòng nhập đầy đủ: Name, Specialization, Department</p>
+          </div>
+        `;
+        stopLoading();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/doctors/create?token=${authToken}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(doctorData)
+        });
+        
+        const data = await response.json();
+        
+        let resultHTML = '';
+        if (data.code === 0) {
+          resultHTML = `
+            <div class="result success">
+              <h3>✅ Success! Code: ${data.code}</h3>
+              <p><strong>${data.message}</strong></p>
+              <div style="margin-top: 15px; background: white; padding: 10px; border-radius: 5px;">
+                <h4>Doctor Created:</h4>
+                <p><strong>ID:</strong> ${data.data.id}</p>
+                <p><strong>Name:</strong> ${data.data.name}</p>
+                <p><strong>Specialization:</strong> ${data.data.specialization}</p>
+                <p><strong>Department:</strong> ${data.data.department}</p>
+                <p><strong>Experience:</strong> ${data.data.Experience}</p>
+                <p><strong>Availability:</strong> ${data.data.availability}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          const errorMessages = {
+            1: 'Missing required fields (name, specialization, department)',
+            2: 'Doctor with this name already exists',
+            3: 'Invalid or expired token',
+            4: 'No permission - Only admin can create doctors',
+            5: 'Database error'
+          };
+          
+          resultHTML = `
+            <div class="result error">
+              <h3>❌ Error! Code: ${data.code}</h3>
+              <p><strong>${data.message || errorMessages[data.code]}</strong></p>
+              <div style="margin-top: 10px; font-size: 12px;">
+                <strong>What does this mean?</strong><br>
+                ${getErrorExplanation(data.code)}
+              </div>
+            </div>
+          `;
+        }
+        
+        document.getElementById('create-result').innerHTML = resultHTML;
+      } catch (error) {
+        document.getElementById('create-result').innerHTML = `
+          <div class="result error">
+            <h3>❌ Network Error</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+              💡 Tip: Kiểm tra server có đang chạy không?
+            </p>
+          </div>
+        `;
+      } finally {
+        stopLoading();
+      }
+    }
+
+    // STEP 3: Get All Doctors
+    async function getAllDoctors() {
+      if (!authToken) {
+        alert('⚠️ Vui lòng login trước!');
+        return;
+      }
+
+      const stopLoading = showLoading('get-btn-text');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/doctors?token=${authToken}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          let doctorsHTML = `
+            <div class="result success">
+              <h3>✅ Found ${data.data.length} Doctors</h3>
+              <div style="margin-top: 15px;">
+          `;
+          
+          data.data.forEach((doctor, index) => {
+            doctorsHTML += `
+              <div style="background: white; padding: 10px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #667eea;">
+                <strong>${index + 1}. ${doctor.name}</strong><br>
+                <small>
+                  Specialization: ${doctor.specialization} | 
+                  Department: ${doctor.department} | 
+                  ID: ${doctor.id}
+                </small>
+              </div>
+            `;
+          });
+          
+          doctorsHTML += `</div></div>`;
+          document.getElementById('get-result').innerHTML = doctorsHTML;
+        } else {
+          document.getElementById('get-result').innerHTML = `
+            <div class="result error">
+              <h3>❌ Error</h3>
+              <p>${data.message}</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        document.getElementById('get-result').innerHTML = `
+          <div class="result error">
+            <h3>❌ Error</h3>
+            <p>${error.message}</p>
+          </div>
+        `;
+      } finally {
+        stopLoading();
+      }
+    }
+
+    // Helper: Error Explanation
+    function getErrorExplanation(code) {
+      const explanations = {
+        1: 'Bạn cần nhập đầy đủ: name, specialization, và department. Các field khác là optional.',
+        2: 'Database đã có bác sĩ với tên này rồi. Thử đổi tên khác.',
+        3: 'Token hết hạn hoặc sai. Hãy login lại.',
+        4: 'Chỉ admin mới được tạo doctor. Bạn đang dùng role khác.',
+        5: 'Lỗi kết nối database. Kiểm tra MongoDB connection.'
+      };
+      return explanations[code] || 'Unknown error';
+    }
+
+    // Auto-check server on load
+    window.addEventListener('load', async () => {
+      try {
+        const response = await fetch(`${API_BASE}/`);
+        const text = await response.text();
+        console.log('✅ Server is running:', text);
+      } catch (error) {
+        alert('⚠️ Cannot connect to server!\n\nMake sure server is running:\ncd server\nnode index.js');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+{
+  "info": {
+    "name": "Hospital Management - Doctor APIs",
+    "_postman_id": "doctor-apis-collection",
+    "description": "Collection gồm 4 API quản lý bác sĩ với token authentication qua query string",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. Authentication",
+      "item": [
+        {
+          "name": "Login - Get Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.environment.set('authToken', response.token);",
+                  "        console.log('✅ Token saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Đăng nhập để lấy JWT token. Token sẽ tự động lưu vào environment variable 'authToken'."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API 1 - Export JSON",
+      "item": [
+        {
+          "name": "Export All Doctors as JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "export"]
+            },
+            "description": "API công khai - Tải xuống toàn bộ danh sách bác sĩ dưới dạng JSON file. Không cần token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API 2 - By Department",
+      "item": [
+        {
+          "name": "Get Doctors by Department - Cardiology",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-department?token={{authToken}}&department=Cardiology",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-department"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "description": "JWT Token từ login"
+                },
+                {
+                  "key": "department",
+                  "value": "Cardiology",
+                  "description": "Tên khoa/phòng ban"
+                }
+              ]
+            },
+            "description": "Lấy danh sách bác sĩ theo khoa. Yêu cầu token trong query string."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctors by Department - General",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-department?token={{authToken}}&department=General",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-department"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "department",
+                  "value": "General"
+                }
+              ]
+            },
+            "description": "Lấy bác sĩ thuộc khoa General"
+          },
+          "response": []
+        },
+        {
+          "name": "Error - No Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-department?department=Cardiology",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-department"],
+              "query": [
+                {
+                  "key": "department",
+                  "value": "Cardiology"
+                }
+              ]
+            },
+            "description": "Test lỗi khi không có token. Kết quả: Unauthorized"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API 3 - By Specialization",
+      "item": [
+        {
+          "name": "Get Doctors by Specialization - Cardiologist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-specialization?token={{authToken}}&specialization=Cardiologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-specialization"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "description": "JWT Token"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Cardiologist",
+                  "description": "Chuyên khoa"
+                }
+              ]
+            },
+            "description": "Lấy danh sách bác sĩ theo chuyên khoa Cardiologist"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctors by Specialization - Urologist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-specialization?token={{authToken}}&specialization=Urologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-specialization"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Urologist"
+                }
+              ]
+            },
+            "description": "Lấy bác sĩ chuyên khoa Urologist"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctors by Specialization - Gynaecologist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/by-specialization?token={{authToken}}&specialization=Gynaecologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors", "by-specialization"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Gynaecologist"
+                }
+              ]
+            },
+            "description": "Lấy bác sĩ chuyên khoa Gynaecologist"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API 4 - Advanced Filters",
+      "item": [
+        {
+          "name": "Get All Doctors with Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "description": "JWT Token"
+                }
+              ]
+            },
+            "description": "Lấy tất cả bác sĩ (không filter)"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Name - 'Dr'",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&name=Dr",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "name",
+                  "value": "Dr",
+                  "description": "Tìm theo tên (partial match, case-insensitive)"
+                }
+              ]
+            },
+            "description": "Tìm bác sĩ có tên chứa 'Dr'"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Name - 'Rahul'",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&name=Rahul",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "name",
+                  "value": "Rahul"
+                }
+              ]
+            },
+            "description": "Tìm bác sĩ có tên 'Rahul'"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Department",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&department=Cardiology",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "department",
+                  "value": "Cardiology"
+                }
+              ]
+            },
+            "description": "Lọc theo department"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Specialization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&specialization=Cardiologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Cardiologist"
+                }
+              ]
+            },
+            "description": "Lọc theo chuyên khoa"
+          },
+          "response": []
+        },
+        {
+          "name": "Combined Filters - Name + Specialization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&name=Dr&specialization=Cardiologist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "name",
+                  "value": "Dr"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Cardiologist"
+                }
+              ]
+            },
+            "description": "Kết hợp nhiều filter: tên + chuyên khoa"
+          },
+          "response": []
+        },
+        {
+          "name": "Combined Filters - All 3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?token={{authToken}}&name=Mishra&specialization=Cardiologist&department=Cardiology",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doctors"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}"
+                },
+                {
+                  "key": "name",
+                  "value": "Mishra"
+                },
+                {
+                  "key": "specialization",
+                  "value": "Cardiologist"
+                },
+                {
+                  "key": "department",
+                  "value": "Cardiology"
+                }
+              ]
+            },
+            "description": "Kết hợp 3 filters: tên + chuyên khoa + department"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
