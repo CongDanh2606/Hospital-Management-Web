@@ -1,2 +1,5 @@
 /server/.env
+/server/ok.env
+/database-viewer/.env
+.env
 node_modules/
